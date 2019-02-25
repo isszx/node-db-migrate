@@ -2,12 +2,13 @@ require('pkginfo')(module, 'version'); // jshint ignore:line
 var fs = require('fs');
 var path = require('path');
 var log = require('db-migrate-shared').log;
+var is = require('./lib/is.js');
 
 exports.dataType = require('db-migrate-shared').dataType;
 
 function loadPluginList () {
   var plugins = JSON.parse(
-    fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf-8')
+    fs.readFileSync(path.join(is.Electron ? __dirname : process.cwd, 'package.json'), 'utf-8')
   );
   var targets = [];
 
@@ -27,7 +28,7 @@ function loadPlugins () {
   var hooks = {};
 
   for (; i < length; ++i) {
-    var plugin = require(path.join(process.cwd(), 'node_modules', plugins[i]));
+    var plugin = require(path.join(is.Electron ? __dirname : process.cwd, 'node_modules', plugins[i]));
 
     if (
       typeof plugin.name !== 'string' ||
